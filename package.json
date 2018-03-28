@@ -1,0 +1,20 @@
+{
+  "name": "tippbackend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/baehll/tippbackend\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[C\u001b[C\u001b[C\u001b[C\u001b[Chttps:\u001b[2~//github.com/baehll/tippbackend"
+  },
+  "author": "baehll",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "mysql": "^2.15.0",
+    "nodemon": "^1.17.2"
+  }
+}

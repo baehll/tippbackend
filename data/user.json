@@ -1,0 +1,10 @@
+{
+  user1:{
+    "name":"Uno",
+    "job":"Kellner"
+  },
+  user2:{
+    "name":"Dos",
+    "job":"Kein Kellner"
+  }
+}
