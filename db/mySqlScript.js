@@ -1,119 +1,6 @@
 let mysql   = require("mysql");
 let fs = require("fs");
 
-let TABLESTRUCTURE = {
-  TABLE_GROUPS:{
-    id:{
-      colName:"groupsID",
-      specs:"int(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY"
-    },
-    name:{
-      colName:"groupname",
-      specs:"VARCHAR(30) NOT NULL"
-    }
-  },
-  TABLE_STAGES:{
-    id:{
-      colName:"stageID",
-      specs:"int(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY"
-    },
-    name:{
-      colName:"stagename",
-      specs:"VARCHER(30) NOT NULL"
-    }
-  },
-  TABLE_TEAMS:{
-    id:{
-      colName:"teamID",
-      specs:"int(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY"
-    },
-    name:{
-      colName:"teamname",
-      specs:"VARCHAR(30) NOT NULL"
-    },
-    groupID:{
-      colName:"groupID",
-      specs:"int(6)  NOT NULL"
-    }
-  },
-  TABLE_MATCHES:{
-    id:{
-      colName:"matchID",
-      specs:"int(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY"
-    },
-    teamone:{
-      colName:"teamoneID",
-      specs:"int(6) NOT NULL"
-    },
-    teamtwo:{
-      colName:"teamtwoID",
-      specs:"int(6) NOT NULL"
-    },
-    stage:{
-      colName:"stageID",
-      specs:"int(6) NOT NULL"
-    },
-    date:{
-      colName:"matchdate",
-      specs:"DATE NOT NULL"
-    }
-  },
-  TABLE_MATCH_RESULTS:{
-    id:{
-      colName:"matchResultID",
-      specs:"int(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY"
-    },
-    matchID:{
-      colName:"matchID",
-      specs:"int(6) NOT NULL"
-    },
-    goalone:{
-      colName:"goalone",
-      specs:"int(2) NOT NULL"
-    },
-    goaltwo:{
-      colName:"goaltwo",
-      specs:"int(2) NOT NULL"
-    }
-  },
-  TABLE_PLAYERS:{
-    id:{
-      colName:"playerID",
-      specs:"int(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY"
-    },
-    name:{
-      colName:"playername",
-      specs:"VARCHAR(255) NOT NULL"
-    },
-    score:{
-      colName:"playerscore",
-      specs:"float(6)"
-    }
-  },
-  TABLE_PLAYER_RESULTS:{
-    id:{
-      colName:"playerResultID",
-      specs:"int(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY"
-    },
-    playerID:{
-      colName:"playerID",
-      specs:"int(6) NOT NULL"
-    },
-    matchID:{
-      colName:"matchID",
-      specs:"int(6) NOT NULL"
-    },
-    tipone:{
-      colName:"tipone",
-      specs:"int(3) NOT NULL"
-    },
-    tiptwo:{
-      colName:"tiptwo",
-      specs:"int(3) NOT NULL"
-    }
-  }
-};
-
 let con = mysql.createConnection({
   host:"localhost",
   port:"4000",
@@ -127,28 +14,244 @@ con.connect(function(err){
   console.log("DB connected");
 });
 
-function createTableSql(){
-    let sqlCreateTable = [];
-    let sqlFields = "";
-    for (let table in TABLESTRUCTURE){
-      sqlFields = "CREATE TABLE " + table + " ( ";
-      let field = TABLESTRUCTURE[table];
-      for (let prop in field){
-        sqlFields += field[prop].colName + " " + field[prop].specs + ", ";
-      };
-      sqlFields = sqlFields.substring(0, sqlFields.length - 2) + ")";
-      console.log(sqlFields);
-      sqlCreateTable.push(sqlFields);
-    };
-    return sqlCreateTable;
-}
-
 exports.fillDefaultDB = function(){
-  let defaultInserts = [];
-  //gott hilf mir bitte
-  defaultInserts = fs.readFileSync("./DefaultInserts.txt").toString("utf-8").split("/^INSERT INTO * )\",/+g");
+  console.log("Beginne mit inserts");
+  let defaultInserts = [
+    "INSERT INTO TABLE_STAGES (stageID, stagename) VALUES (0, \"Gruppe\")",
+    "INSERT INTO TABLE_STAGES (stageID, stagename) VALUES (1, \"Achtelfinale\")",
+    "INSERT INTO TABLE_STAGES (stageID, stagename) VALUES (2, \"Viertelfinale\")",
+    "INSERT INTO TABLE_STAGES (stageID, stagename) VALUES (3, \"Halbfinale\")",
+    "INSERT INTO TABLE_STAGES (stageID, stagename) VALUES (4, \"Platz 3\")",
+    "INSERT INTO TABLE_STAGES (stageID, stagename) VALUES (5, \"Finale\")",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (0, \"Russland\", 0)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (1, \"Saudi Arabien\", 0)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (2, \"Ägypten\", 0)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (3, \"Uruguay\", 0)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (4, \"Portugal\", 1)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (5, \"Spanien\", 1)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (6, \"Marokko\", 1)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (7, \"Iran\", 1)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (8, \"Frankreich\", 2)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (9, \"Australien\", 2)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (10, \"Peru\", 2)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (11, \"Dänemark\", 2)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (12, \"Argentinien\", 3)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (13, \"Island\", 3)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (14, \"Kroatien\", 3)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (15, \"Nigeria\", 3)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (16, \"Brasilien\", 4)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (17, \"Schweiz\", 4)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (18, \"Costa Rica\", 4)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (19, \"Serbien\", 4)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (20, \"Deutschland\", 5)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (21, \"Mexiko\", 5)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (22, \"Schweden\", 5)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (23, \"Südkorea\", 5)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (24, \"Belgien\", 6)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (25, \"Panama\", 6)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (26, \"Tunesien\", 6)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (27, \"England\", 6)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (28, \"Polen\", 7)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (29, \"Senegal\", 7)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (30, \"Kolumbien\", 7)",
+    "INSERT INTO TABLE_TEAMS (teamID , teamname, groupID) VALUES (31, \"Japan\", 7)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (0, 0, 1,\"2018-06-14\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (1, 2, 3,\"2018-06-15\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (2, 0, 2,\"2018-06-19\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (3, 3, 1,\"2018-06-20\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (4, 3, 0,\"2018-06-25\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (5, 1, 2,\"2018-06-25\", 0)",
+                //Gruppe B - done
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (6, 6 , 7 ,\"2018-06-15\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (7, 4 , 5 ,\"2018-06-15\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (8, 4 , 6 ,\"2018-06-20\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (9, 7 , 5 ,\"2018-06-20\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (10, 5 , 6 ,\"2018-06-25\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (11, 7 , 4 ,\"2018-06-25\", 0)",
+                //Gruppe C - done
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (12,   8 , 9 ,\"2018-06-15\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (13,   10 , 11 ,\"2018-06-16\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (14,   11 , 9 ,\"2018-06-21\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (15,   8 , 10 ,\"2018-06-21\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (16,   11 , 8 ,\"2018-06-26\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (17,   9 , 10 ,\"2018-06-26\", 0)",
+                //Gruppe D - done
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (18,   12 , 13 ,\"2018-06-16\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (19,   14 , 15 ,\"2018-06-16\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (20,   12 , 14 ,\"2018-06-21\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (21,   15 , 13 ,\"2018-06-22\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (22,   13 , 14 ,\"2018-06-26\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (23,   15 , 12 ,\"2018-06-26\", 0)",
+                //Gruppe E - done
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (24,   18 , 19 ,\"2018-06-17\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (25,   16 , 17 ,\"2018-06-17\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (26,   16 , 18 ,\"2018-06-22\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (27,   19 , 17 ,\"2018-06-22\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (28,   19 , 16 ,\"2018-06-27\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (29,   17 , 18 ,\"2018-06-27\", 0)",
+                //Gruppe F - done
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (30,   20 , 21 ,\"2018-06-17\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (31,   22 , 23 ,\"2018-06-18\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (32,   23 , 21 ,\"2018-06-23\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (33,   20 , 22 ,\"2018-06-23\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (34,   21 , 22 ,\"2018-06-27\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (35,   23 , 20 ,\"2018-06-27\", 0)",
+                //Gruppe G - done
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (36,   24 , 25 ,\"2018-06-18\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (37,   26 , 27 ,\"2018-06-18\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (38,   24 , 26 ,\"2018-06-23\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (39,   27 , 25 ,\"2018-06-24\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (40,   27 , 24 ,\"2018-06-28\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (41,   25 , 26 ,\"2018-06-28\", 0)",
+                //Gruppe H - done
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (42,   30 , 31 ,\"2018-06-19\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (43,   28 , 29 ,\"2018-06-19\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (44,   31 , 29 ,\"2018-06-24\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (45,   28 , 30 ,\"2018-06-24\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (46,   29 , 30 ,\"2018-06-28\", 0)",
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (47,   31 , 28 ,\"2018-06-28\", 0)",
 
-  //console.log("defaultInserts ist ein array: " + defaultInserts);
+                //Achtelfinale - done
+
+                //Sieger C - Zweiter D
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (48,   11 , 12 ,\"2018-06-30\", 1)",
+                //Sieger A - Zweiter B
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (49,   3 , 4 ,\"2018-06-30\", 1)",
+                //Sieger B - Zweiter A
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (50,   7 , 0 ,\"2018-07-01\", 1)",
+                //Sieger D - Zweiter C
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (51,   15 , 8 ,\"2018-07-01\", 1)",
+                //Sieger E- Zweiter F
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (52,   19 , 20 ,\"2018-07-02\", 1)",
+                //Sieger G - Zweiter H
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (53,   27 , 28 ,\"2018-07-02\", 1)",
+                //Sieger F - Zweiter E
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (54,   23 , 16 ,\"2018-07-03\", 1)",
+                //Sieger H - Zweiter G
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (55,   31 , 24 ,\"2018-07-03\", 1)",
+
+                //Viertelfinale - done
+
+                //Sieger AF1 - Sieger AF2
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (56,   11 , 4 ,\"2018-07-06\", 2)",
+                //Sieger AF3 - Sieger AF4
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (57,   27 , 19 ,\"2018-07-06\", 2)",
+                //Sieger AF6 - Sieger AF5
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (58,   31 , 23 ,\"2018-07-07\", 2)",
+                //Sieger AF8 - Sieger AF7
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (59,   7 , 15 ,\"2018-07-07\", 2)",
+
+                //Halbfinale - done
+
+                //Sieger VF2 - Sieger VF1
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (60,   27 , 11 ,\"2018-07-10\", 3)",
+                //Sieger VF4 - Sieger AF3
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (61,   14 , 31 ,\"2018-07-11\", 3)",
+
+                //Spiel um Platz 3 - done
+
+                //Verlierer HF1 - Verlierer HF2
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (62,   11 , 31 ,\"2018-07-14\", 4)",
+
+                //Finale - done
+
+                //Sieger HF1 - Sieger HF2
+                "INSERT INTO TABLE_MATCHES (matchID , teamoneID, teamtwoID,  matchdate, stageID) VALUES (63,   27 , 15 ,\"2018-07-10\", 5)",
+
+                // Gruppen Tabelle befüllen
+
+
+                "INSERT INTO TABLE_GROUPS (groupID , groupname) VALUES (0, \"Gruppe A\")",
+                "INSERT INTO TABLE_GROUPS (groupID , groupname) VALUES (1, \"Gruppe B\")",
+                "INSERT INTO TABLE_GROUPS (groupID , groupname) VALUES (2, \"Gruppe C\")",
+                "INSERT INTO TABLE_GROUPS (groupID , groupname) VALUES (3, \"Gruppe D\")",
+                "INSERT INTO TABLE_GROUPS (groupID , groupname) VALUES (4, \"Gruppe E\")",
+                "INSERT INTO TABLE_GROUPS (groupID , groupname) VALUES (5, \"Gruppe F\")",
+                "INSERT INTO TABLE_GROUPS (groupID , groupname) VALUES (6, \"Gruppe G\")",
+                "INSERT INTO TABLE_GROUPS (groupID , groupname) VALUES (7, \"Gruppe H\")",
+
+
+                // Gruppe A Results
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (0,0 ,2 ,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (1,1 ,0 ,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (2,2 , 3,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (3,3 , 5,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (4, 4, 2,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (5,5 , 0,0)",
+
+                // Group B Results
+
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (6,6 ,2 ,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (7,7 ,0 ,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (8,8 , 3,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (9,9 , 5,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (10, 10, 2,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (11,11 , 0,0)",
+                // Group C Results
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (12,12 ,2 ,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (13,13 ,0 ,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (14,14 , 3,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (15,15 , 5,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (16, 16, 2,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (17,17 , 0,0)",
+
+                // Group D Results
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (18,18 ,2 ,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (19,19 ,0 ,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (20,20 , 3,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (21,21 , 5,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (22, 22, 2,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (23,23 , 0,0)",
+                // Group E Results
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (24,24 ,2 ,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (25,25 ,0 ,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (26,26 , 3,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (27,27 , 5,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (28, 28, 2,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (29,29 , 0,0)",
+                // Group F Results
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (30,30 ,2 ,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (31,31 ,0 ,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (32,32 , 3,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (33,33 , 5,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (34, 34, 2,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (35,35 , 0,0)",
+                // Group G Results
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (36,36,2 ,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (37,37 ,0 ,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (38,38 , 3,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (39,39 , 5,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (40, 40, 2,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (41,41 , 0,0)",
+                // Group H Results
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (42,42 ,2 ,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (43,43 ,0 ,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (44,44 , 3,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (45,45 , 5,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (46, 46, 2,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (47,47 , 0,0)",
+
+                // Achtelfinale Results
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (48,48 ,2 ,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (49,49 ,0 ,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (50,50 , 3,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (51,51 , 5,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (52, 52, 2,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (53,53 , 2,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (54, 54, 2,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (55,55 , 1,0)",
+
+                // Viertelfinale Result
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (56, 56, 2,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (57,57 , 2,0)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (58, 58, 2,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (59,59 , 0,1)",
+                // Halbfinale Results
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (60, 60, 2,1)",
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (61,61 , 3,0)",
+                //Finale Results
+                "INSERT INTO TABLE_MATCH_RESULTS (matchResultID , matchID , goalone , goaltwo) VALUES (62,63 , 2,0)"
+  ];
   defaultInserts.forEach(function(item){
     con.connect(function(err){
       con.query(item, function(err, result){
@@ -160,14 +263,186 @@ exports.fillDefaultDB = function(){
 };
 
 exports.createTables = function(){
-  sqlTransaction = createTableSql();
+  
+  let TABLESTRUCTURE = {
+    TABLE_GROUPS:{
+      id:{
+        colName:"groupID",
+        specs:"int(6) UNSIGNED  PRIMARY KEY"
+      },
+      name:{
+        colName:"groupname",
+        specs:"VARCHAR(30) NOT NULL"
+      }
+    },
+    TABLE_STAGES:{
+      id:{
+        colName:"stageID",
+        specs:"int(6) UNSIGNED  PRIMARY KEY"
+      },
+      name:{
+        colName:"stagename",
+        specs:"VARCHAR(30) NOT NULL"
+      }
+    },
+    TABLE_TEAMS:{
+      id:{
+        colName:"teamID",
+        specs:"int(6) UNSIGNED  PRIMARY KEY"
+      },
+      name:{
+        colName:"teamname",
+        specs:"VARCHAR(30) NOT NULL"
+      },
+      groupID:{
+        colName:"groupID",
+        specs:"int(6)  NOT NULL"
+      }
+    },
+    TABLE_MATCHES:{
+      id:{
+        colName:"matchID",
+        specs:"int(6) UNSIGNED  PRIMARY KEY"
+      },
+      teamone:{
+        colName:"teamoneID",
+        specs:"int(6) NOT NULL"
+      },
+      teamtwo:{
+        colName:"teamtwoID",
+        specs:"int(6) NOT NULL"
+      },
+      stage:{
+        colName:"stageID",
+        specs:"int(6) NOT NULL"
+      },
+      date:{
+        colName:"matchdate",
+        specs:"DATE NOT NULL"
+      }
+    },
+    TABLE_MATCH_RESULTS:{
+      id:{
+        colName:"matchResultID",
+        specs:"int(6) UNSIGNED  PRIMARY KEY"
+      },
+      matchID:{
+        colName:"matchID",
+        specs:"int(6) NOT NULL"
+      },
+      goalone:{
+        colName:"goalone",
+        specs:"int(2) NOT NULL"
+      },
+      goaltwo:{
+        colName:"goaltwo",
+        specs:"int(2) NOT NULL"
+      }
+    },
+    TABLE_PLAYERS:{
+      id:{
+        colName:"playerID",
+        specs:"int(6) UNSIGNED  PRIMARY KEY"
+      },
+      name:{
+        colName:"playername",
+        specs:"VARCHAR(255) NOT NULL"
+      },
+      score:{
+        colName:"playerscore",
+        specs:"float(6)"
+      }
+    },
+    TABLE_PLAYER_RESULTS:{
+      id:{
+        colName:"playerResultID",
+        specs:"int(6) UNSIGNED  PRIMARY KEY"
+      },
+      playerID:{
+        colName:"playerID",
+        specs:"int(6) NOT NULL"
+      },
+      matchID:{
+        colName:"matchID",
+        specs:"int(6) NOT NULL"
+      },
+      tipone:{
+        colName:"tipone",
+        specs:"int(3) NOT NULL"
+      },
+      tiptwo:{
+        colName:"tiptwo",
+        specs:"int(3) NOT NULL"
+      }
+    }
+  };
 
-  sqlTransaction.forEach(function(item){
+  let sqlCreateTable = [];
+  let sqlFields;
+
+  for (let table in TABLESTRUCTURE){
+    sqlFields = "CREATE TABLE " + table + " ( ";
+    let field = TABLESTRUCTURE[table];
+    for (let prop in field){
+      sqlFields += field[prop].colName + " " + field[prop].specs + ", ";
+    }
+    sqlFields = sqlFields.substring(0, sqlFields.length - 2) + ")";
+    console.log(sqlFields);
+    sqlCreateTable.push(sqlFields);
+  }
+
+  sqlCreateTable.forEach(function(item){
     con.connect(function(err){
       con.query(item, function(err, result){
         if(err) return console.log(err);
         console.log("table erstellt");
       });
+    });
+  });
+};
+
+exports.parseMatches = (callback, stage, group) => {
+  let subStr1 = "";
+  let subStr2 = "";
+  let resultArr = [];
+
+    if(stage == 0){
+      subStr1 = " AND TABLE_TEAMS.groupID = " + group;
+      subStr2 = " AND TABLE_TEAMS.groupID = " + group;
+    }
+   
+    let sqlTransaction = "SELECT TABLE_MATCHES.matchID, TABLE_MATCHES.stageID as STAGE, (SELECT TABLE_TEAMS.teamID FROM TABLE_TEAMS WHERE TABLE_MATCHES.teamoneID = TABLE_TEAMS.teamID " + subStr1 + ") TEAM1, (SELECT TABLE_TEAMS.teamID from TABLE_TEAMS WHERE TABLE_MATCHES.teamtwoID = TABLE_TEAMS.teamID " + subStr2 + ") TEAM2 FROM TABLE_MATCHES HAVING TABLE_MATCHES.stageID = " + stage + " AND (team1 is not null and team2 is not null)";
+    
+    //console.log("SQL ABFRAGE: " + sqlTransaction);
+    con.connect((err) =>{
+
+      con.query(sqlTransaction, (err, result) =>{
+        if(err) return console.log(err);
+        result.forEach((row) =>{
+          resultArr.push({matchID: row.matchID, stage: row.STAGE, team1: row.TEAM1, team2: row.TEAM2}); 
+        });
+        callback(err, resultArr);
+      });
+    });
+};
+
+exports.parsePlayers = (callback) =>{  
+  con.connect((err) => {
+    con.query("SELECT * FROM TABLE_PLAYERS ORDER BY TABLE_PLAYERS.playerscore DESC", (err, result) =>{
+      if(err) return console.log(err);
+      callback(err, result);
+    });
+  });
+};
+
+function getPlayerID(name){
+  con.connect((err) =>{
+    con.query("SELECT TABLE_PLAYERS.playerID from TABLE_PLAYERS WHERE TABLE_PLAYER.playerName = " + name, (err, result) =>{
+      if(err){
+        console.log(err);
+        return -1;
+      }
+      return result;
     });
   });
 }

@@ -11,9 +11,25 @@ app.get("/listUsers", function(req, res){
   });
 });
 
-//mySqlScript.createTables();
+app.get("/matches/:stage/:group", (req, res) => {
+  mySqlScript.parseMatches((err, result) =>{
+    console.log(result);
+    res.end(JSON.stringify(result));
+  }, req.params.stage, req.params.group);
+});
+
+app.get("/players/allPlayers", (req, res) =>{
+  mySqlScript.parsePlayers((err, result) =>{
+    if(err) return console.log(err);
+    res.end(JSON.stringify(result));
+  });
+});
+
+/*
+mySqlScript.createTables();
 
 mySqlScript.fillDefaultDB();
+*/
 
 app.listen(3000);
 
