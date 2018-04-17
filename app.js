@@ -1,20 +1,19 @@
-let express = require("express");
-let app     = express();
-let fs      = require("fs");
-let path    = require("path");
-let mySqlScript = require(__dirname + "\\db\\mySqlScript");
+const express = require("express");
+const app = express();
+const fs = require("fs");
 
-app.get("/listUsers", function(req, res){
-  fs.readFile(__dirname + "/data/user.json", "utf8", function(err, data){
-    console.log(data);
-    res.end(data);
-  });
-});
+const di = require("./server/dirtyImport");
 
-//mySqlScript.createTables();
+const playerHandler = require("./server/routers/playerRouter");
 
-mySqlScript.fillDefaultDB();
+//di(); //fügt die tabellen ein
+
+//Handlers
+//players
+app.use("/player", playerHandler);
+//matches
+
+//playerTips
 
 app.listen(3000);
-
 console.log("Running at Port 3000");
