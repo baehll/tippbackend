@@ -2,9 +2,10 @@ const express = require("express");
 const app = express();
 const fs = require("fs");
 
-const di = require("./server/dirtyImport");
+const di = require("./server/helpers/dirtyImport");
 
 const playerHandler = require("./server/routers/playerRouter");
+const matchResultsHandler = require("./server/routers/matchResultsRouter");
 
 //di(); //fügt die tabellen ein
 
@@ -12,6 +13,9 @@ const playerHandler = require("./server/routers/playerRouter");
 //players
 app.use("/player", playerHandler);
 //matches
+
+//matchResults
+app.use("/matchResults", matchResultsHandler);
 
 //playerTips
 

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const con = require("../connector");
+const con = require("../helpers/connector");
 //getPlayers
 router.get("/", (req, res, next) => {
     let sqlStatement = "SELECT table_players.playerName, table_players.playerScore from table_players order by table_players.playerScore desc";
