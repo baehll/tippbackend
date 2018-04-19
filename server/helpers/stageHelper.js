@@ -1,40 +1,33 @@
 const con = require("./connector");
 
 const today = new Date();
-//console.log(today);
+console.log(today);
 
-let datePromise = new Promise((resolve, reject) => {
-    const sqlStatement = "SELECT max(table_matches.matchdate) as date, table_matches.stageID FROM table_matches WHERE table_matches.matchdate <= '2018-06-20'";
-    con.connect((err) => {
-        con.query(sqlStatement, (err, result) => {
-            //console.log(result)
-            if (err) reject(err);
-            //console.log(result);
-            resolve(result[0]);
-        });
-    });
-});
-
-/*
-function datePromise() {
-    return new Promise(async(resolve, reject) => {
-        const sqlStatement = "SELECT max(table_matches.matchdate) as date, table_matches.stageID FROM table_matches WHERE table_matches.matchdate <= '2018-06-20'";
-        await con.connect((err) => {
+function currentStageDate() {
+    let sqlStatement = "SELECT max(table_matches.matchdate) as date, table_matches.stageID FROM table_matches WHERE table_matches.matchdate <= '" + today + "'";
+    return new Promise((resolve, reject) => {
+        con.connect((err) => {
             con.query(sqlStatement, (err, result) => {
-                //console.log(result)
                 if (err) reject(err);
-                //console.log(result);
-                resolve(result[0]);
+                resolve(result[0].stageID);
             });
         });
     });
 }
-*/
-//console.log("stage output " + val);
-module.exports = () => {
-    datePromise.then((fulfilled) => {
-        console.log("promise fulfilled? : " + fulfilled.stageID);
-    }).catch((error) => {
-        console.log(error);
+
+module.exports = async() => {
+    //warten, bis das Promise erfüllt wurde
+    return await new Promise(async(resolve, reject) => {
+        //console.log("reject: " + reject);
+        const stage = await currentStageDate()
+            .then((response) => {
+                //console.log("korrekte response: " + response);
+                return response;
+            }).catch((fail) => {
+                console.log("failed: " + fail);
+            });
+        // da 0 == false ist, muss auf >= 0 geprüft werden
+        if (stage >= 0) resolve(stage);
+        reject("kein \"stage\" ist da");
     });
 };
