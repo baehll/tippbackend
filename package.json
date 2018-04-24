@@ -14,7 +14,9 @@
     "author": "baehll",
     "license": "ISC",
     "dependencies": {
+        "eslint": "^4.19.1",
         "express": "^4.16.3",
+        "jshint": "^2.9.5",
         "mysql": "^2.15.0",
         "nodemon": "^1.17.2"
     }
