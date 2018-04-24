@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const con = require("../helpers/connector");
+
+const playerID = require("../helpers/playerHelper");
 //getPlayers
 router.get("/", (req, res, next) => {
     let sqlStatement = "SELECT table_players.playerName, table_players.playerScore from table_players order by table_players.playerScore desc";
@@ -29,8 +31,9 @@ router.get("/:id", (req, res, next) => {
 });
 
 //addPlayer
-router.post("/:name", (req, res, next) => {
-    let sqlStatement = "INSERT INTO table_players (table_players.playerName, table_player.playerScore) VALUES (" + req.params.name + ", 0.0)";
+router.post("/:name", async(req, res, next) => {
+    let currPlayerID = playerID;
+    let sqlStatement = "INSERT INTO table_players (table_players.playerID, table_players.playerName, table_players.playerScore) VALUES (" + playerID + ", '" + req.params.name + "', 0.0)";
     con.connect((err) => {
         con.query(sqlStatement, (err, result) => {
             if (err) throw err;
